@@ -1,0 +1,33 @@
+name: "Gradescope Autograder Continuous Deployment Helper"
+description: "A GitHub Action to help with the automated deployment of gradescope autograders"
+author: "Gregory Bell"
+
+inputs:
+  course_id:
+    description: "Set the course id for which this action is deployed."
+    required: true
+
+  gradescope_username:
+    description: "Set the gradescope service user's username."
+    required: true
+
+  gradescope_password:
+    description: "Set the gradescope service user's password."
+    required: true
+
+  gradescope_assignment_id:
+    description: "Set the gradescope assignment id."
+    required: true
+
+  artifact_path:
+    description: "The path the artifact was produced on."
+    required: true
+
+outputs:
+  status:
+    description: "The workflow status."
+
+
+runs:
+  main: dist/index.js
+  using: node20
