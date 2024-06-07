@@ -67,5 +67,6 @@ run()
     );
   })
   .catch((e) => {
+    core.setOutput("status", "failed");
     core.setFailed(e);
   });
