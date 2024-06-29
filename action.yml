@@ -27,7 +27,6 @@ outputs:
   status:
     description: "The workflow status."
 
-
 runs:
   main: dist/index.js
   using: node20
