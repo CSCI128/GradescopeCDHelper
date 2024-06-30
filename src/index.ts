@@ -21,7 +21,9 @@ const gradescope_username = core.getInput("gradescope_username");
 const gradescope_password = core.getInput("gradescope_password");
 
 async function run() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
   const page = await browser.newPage();
   await page.setViewport({ height: 800, width: 1200 });
 

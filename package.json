@@ -1,6 +1,6 @@
 {
   "name": "gradescope-cd-helper-action",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A GitHub Action to help with the automated deployment of gradescope autograders",
   "repository": {
     "type": "git",
