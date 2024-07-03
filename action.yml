@@ -27,7 +27,7 @@ runs:
   using: docker
   image: Dockerfile
   args:
-    - '/usr/bin/google-chrome'
+    - /usr/bin/google-chrome
     - ${{inputs.artifact_path}}
     - ${{inputs.gradescope_assignment_id}}
     - ${{inputs.course_id}}
