@@ -9,7 +9,6 @@ import {
   navigate_to_uploader_page,
   upload_zip_file,
 } from "./gradescope_assignment_uploader";
-import * as fs from "node:fs";
 
 // load from inputs
 const artifact_path = process.argv[1]

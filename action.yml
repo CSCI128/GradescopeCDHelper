@@ -23,10 +23,12 @@ inputs:
     description: "The path the artifact was produced on."
     required: true
 
-outputs:
-  status:
-    description: "The workflow status."
-
 runs:
-  main: dist/index.js
-  using: node20
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{inputs.artifact_path}}
+    - ${{inputs.gradescope_assignment_id}}
+    - ${{inputs.course_id}}
+    - ${{inputs.gradescope_username}}
+    - ${{inputs.gradescope_password}}
