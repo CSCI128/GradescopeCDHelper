@@ -19,5 +19,6 @@ RUN apt-get update && \
     apt-get install -y libgbm-dev xvfb
 
 COPY --from=builder /app/dist /dist
+ADD --chmod=777 entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT [ "xvfb-run", "-e", "/dev/stdout","--server-args='-screen 0 1200x800x24'", "node", "/dist/index.js"]
+ENTRYPOINT /entrypoint.sh
