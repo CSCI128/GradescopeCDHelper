@@ -15,7 +15,8 @@ FROM ghcr.io/puppeteer/puppeteer:22.10.0 AS  dist
 
 USER root
 
-RUN apt-get install -y libgbm-dev xvfb
+RUN apt-get update && \
+    apt-get install -y libgbm-dev xvfb
 
 COPY --from=builder /app/dist /dist
 
