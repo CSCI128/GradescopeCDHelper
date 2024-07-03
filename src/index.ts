@@ -1,4 +1,3 @@
-import * as core from "@actions/core";
 import {
   get_gradescope_login_url,
   get_gradescope_assignment_uploader_url,
@@ -10,20 +9,24 @@ import {
   navigate_to_uploader_page,
   upload_zip_file,
 } from "./gradescope_assignment_uploader";
+import * as fs from "node:fs";
 
 // load from inputs
-const artifact_path = core.getInput("artifact_path");
-const gradescope_assignment_id = core.getInput("gradescope_assignment_id");
+const artifact_path = process.argv[1]
+const gradescope_assignment_id = process.argv[2]
 
 // Load from secrets
-const course_id = core.getInput("course_id");
-const gradescope_username = core.getInput("gradescope_username");
-const gradescope_password = core.getInput("gradescope_password");
+const course_id = process.argv[3]
+const gradescope_username = process.argv[4]
+const gradescope_password = process.argv[5]
 
 async function run() {
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: `/usr/bin/google-chrome`,
+    args: [`--no-sandbox`, `--headless`, `--disable-gpu`, `--disable-dev-shm-usage`],
   });
+
   const page = await browser.newPage();
   await page.setViewport({ height: 800, width: 1200 });
 
@@ -63,12 +66,11 @@ async function run() {
 
 run()
   .then(() => {
-    core.setOutput("status", "success");
     console.log(
       `successfully uploaded ${artifact_path} to ${get_gradescope_assignment_uploader_url(course_id, gradescope_assignment_id)}`,
     );
   })
   .catch((e) => {
-    core.setOutput("status", "failed");
-    core.setFailed(e);
+    console.log(e)
+    process.exit(1);
   });
