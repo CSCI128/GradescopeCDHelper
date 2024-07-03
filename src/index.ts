@@ -1,75 +1,48 @@
-import {
-  get_gradescope_login_url,
-  get_gradescope_assignment_uploader_url,
-  get_gradescope_assignment_form_id,
-} from "./gradescope";
-import login from "./auth";
-import * as puppeteer from "puppeteer";
-import {
-  navigate_to_uploader_page,
-  upload_zip_file,
-} from "./gradescope_assignment_uploader";
+import { get_gradescope_assignment_uploader_url } from "./gradescope";
+import * as process from "node:process";
+import { run } from "./run";
+import { validate } from "./utils";
 
 // load from inputs
-const artifact_path = process.argv[1]
-const gradescope_assignment_id = process.argv[2]
+const chrome_path = process.argv[2];
+const artifact_path = process.argv[3];
+const gradescope_assignment_id = process.argv[4];
 
 // Load from secrets
-const course_id = process.argv[3]
-const gradescope_username = process.argv[4]
-const gradescope_password = process.argv[5]
+const course_id = process.argv[5];
+const gradescope_username = process.env.GS_USERNAME ?? process.argv[6];
+const gradescope_password = process.env.GS_PASS ?? process.argv[7];
 
-async function run() {
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: `/usr/bin/google-chrome`,
-    args: [`--no-sandbox`, `--headless`, `--disable-gpu`, `--disable-dev-shm-usage`],
-  });
-
-  const page = await browser.newPage();
-  await page.setViewport({ height: 800, width: 1200 });
-
-  if (
-    !(await login(
-      page,
-      get_gradescope_login_url(),
+validate(
+  chrome_path,
+  artifact_path,
+  gradescope_assignment_id,
+  course_id,
+  gradescope_username,
+  gradescope_password,
+)
+  .then(() => {
+    run(
+      chrome_path,
+      artifact_path,
+      gradescope_assignment_id,
+      course_id,
       gradescope_username,
       gradescope_password,
-    ))
-  ) {
-    throw new Error("Failed to login!");
-  }
+    )
+      .then(() => {
+        console.log(
+          `successfully uploaded ${artifact_path} to ${get_gradescope_assignment_uploader_url(course_id, gradescope_assignment_id)}`,
+        );
 
-  if (
-    !(await navigate_to_uploader_page(
-      page,
-      get_gradescope_assignment_uploader_url(
-        course_id,
-        gradescope_assignment_id,
-      ),
-    ))
-  ) {
-    throw new Error("Failed to navigate to uploader page!");
-  }
-
-  if (
-    !(await upload_zip_file(
-      page,
-      get_gradescope_assignment_form_id(gradescope_assignment_id),
-      artifact_path,
-    ))
-  ) {
-    throw new Error("Failed to upload zip file!");
-  }
-}
-
-run()
-  .then(() => {
-    console.log(
-      `successfully uploaded ${artifact_path} to ${get_gradescope_assignment_uploader_url(course_id, gradescope_assignment_id)}`,
-    );
+        process.exit(0);
+      })
+      .catch((e) => {
+        console.error(e);
+        process.exit(2);
+      });
   })
   .catch((e) => {
-    console.log(e)
+    console.error(e);
     process.exit(1);
   });

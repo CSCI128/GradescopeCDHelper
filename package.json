@@ -1,6 +1,6 @@
 {
   "name": "gradescope-cd-helper-action",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "A GitHub Action to help with the automated deployment of gradescope autograders",
   "repository": {
     "type": "git",
@@ -25,8 +25,8 @@
     "bundle": "npm run format:write && npm run package",
     "ci-test": "npx jest",
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
-    "format:write": "npx prettier --write .",
-    "format:check": "npx prettier --check .",
+    "format:write": "npx prettier --write src",
+    "format:check": "npx prettier --check src",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
     "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "npm run package -- --watch",
@@ -63,12 +63,14 @@
     ]
   },
   "dependencies": {
-    "puppeteer": "^22.12.0"
+    "puppeteer": "^22.10.0",
+    "which": "^4.0.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.0",
+    "@types/which": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "@typescript-eslint/parser": "^7.11.0",
     "@vercel/ncc": "^0.38.1",
