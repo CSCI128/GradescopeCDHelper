@@ -22,8 +22,9 @@ export async function run(
     headless: false,
     executablePath: chrome_path,
     args: [
-      // `--no-sandbox`,
-      // `--headless`,
+      `--no-sandbox`,
+      // `--headless`
+      `--disable-setuid-sandbox`,
       `--disable-gpu`,
       `--disable-dev-shm-usage`,
     ],

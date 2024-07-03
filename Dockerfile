@@ -11,8 +11,10 @@ ADD . /app
 
 RUN npm run bundle
 
-FROM ghcr.io/puppeteer/puppeteer:16.1.0 AS  dist
+FROM ghcr.io/puppeteer/puppeteer:22.10.0 AS  dist
+
+RUN apt-get install -y libgbm-dev xvfb
 
 COPY --from=builder /app/dist /dist
 
-ENTRYPOINT ["node", "/dist/index.js"]
+ENTRYPOINT [ "xvfb-run", "--server-args='-screen 0 1200x800x24'", "node", "/dist/index.js"]
