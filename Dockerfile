@@ -21,4 +21,4 @@ RUN apt-get update && \
 COPY --from=builder /app/dist /dist
 ADD --chmod=777 entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT /entrypoint.sh
+ENTRYPOINT /entrypoint.sh $@
