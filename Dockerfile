@@ -20,4 +20,4 @@ RUN apt-get update && \
 
 COPY --from=builder /app/dist /dist
 
-ENTRYPOINT [ "xvfb-run", "--server-args='-screen 0 1200x800x24'", "node", "/dist/index.js"]
+ENTRYPOINT [ "xvfb-run", "-e", "/dev/stdout","--server-args='-screen 0 1200x800x24'", "node", "/dist/index.js"]
