@@ -25,7 +25,7 @@ inputs:
 
 runs:
   using: docker
-  image: docker://ghcr.io/CSCI128/GradescopeCDHelper:v1
+  image: docker://ghcr.io/csci/gradescopecdhelper:v1
   args:
     - /usr/bin/google-chrome
     - ${{inputs.artifact_path}}
