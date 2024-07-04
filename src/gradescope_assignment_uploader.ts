@@ -3,6 +3,7 @@ import * as puppeteer from "puppeteer";
 const GRADESCOPE_AUTOGRADER_SUBMIT_BUTTON_CLASS = ".js-submitAutograder";
 const GRADESCOPE_AUTOGRADER_FILE_UPLOAD = "input[type='file']";
 const GRADESCOPE_AUTOGRADER_ERRORS_CLASS = ".js-autograderZipErrors";
+const GRADESCOPE_PLATFORM_ERROR_CLASS = ".alert-error";
 
 export async function navigate_to_uploader_page(
   page: puppeteer.Page,
@@ -34,20 +35,30 @@ export async function upload_zip_file(
     return false;
   }
 
+  console.log(`Uploading ${path_to_zip}...`);
+
   await upload_input.uploadFile(path_to_zip);
 
   const uploader_errors = await upload_form.$(
     GRADESCOPE_AUTOGRADER_ERRORS_CLASS,
   );
+
   if (uploader_errors === null) {
     console.error("Failed to check for errors!");
     return false;
   }
 
   if (await uploader_errors.isVisible()) {
+    console.error("Failed to upload autograder!");
     console.error(await uploader_errors.evaluate((el) => el.textContent));
     return false;
   }
+
+  const uploaded_file = await (
+    await upload_form.$(".js-fileUploadPrompt")
+  )?.evaluate((el) => el.textContent);
+
+  console.log(`${uploaded_file} was uploaded`);
 
   const upload_btn = await upload_form.$(
     GRADESCOPE_AUTOGRADER_SUBMIT_BUTTON_CLASS,
@@ -61,7 +72,25 @@ export async function upload_zip_file(
     return false;
   }
 
+  // @ts-ignore
+  if (await upload_btn.evaluate((el) => el.disabled)) {
+    console.error(
+      "Submit button is disabled! Unable to commit autograder zip.",
+    );
+    return false;
+  }
+
   await upload_btn.click();
+
+  await page.waitForNavigation({ waitUntil: "networkidle2" });
+
+  const submit_errors = await page.$(GRADESCOPE_PLATFORM_ERROR_CLASS);
+
+  if (submit_errors !== null) {
+    console.error("Failed to submit autograder.");
+    console.error(await submit_errors.evaluate((el) => el.textContent));
+    return false;
+  }
 
   return true;
 }

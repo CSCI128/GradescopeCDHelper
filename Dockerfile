@@ -18,6 +18,8 @@ USER root
 RUN apt-get update && \
     apt-get install -y libgbm-dev xvfb
 
+USER pptruser
+
 COPY --from=builder /app/dist /dist
 ADD --chmod=777 entrypoint.sh /entrypoint.sh
 
