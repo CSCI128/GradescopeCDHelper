@@ -69,14 +69,6 @@ This should be derived from the artifacts produced during the CI pipeline
 If running as a separate job (which it probably should be), you may need to run the `actions/download-artifact` action
 to get pull it into this job.
 
-## Outputs
-
-### `status`
-
-The workflow status.
-
-Can either be `success` or `failed` You can safely ignore this output.
-
 ## Example usage
 
 ```yaml
